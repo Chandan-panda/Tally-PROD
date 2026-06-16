@@ -1,0 +1,21 @@
+export const DEFAULT_CATEGORIES = [
+  { name: 'Groceries', kind: 'expense', icon: '\ud83d\uded2', color: '#7c9a6d' },
+  { name: 'Dining out', kind: 'expense', icon: '\ud83c\udf7d\ufe0f', color: '#c46a3f' },
+  { name: 'Transport', kind: 'expense', icon: '\ud83d\ude95', color: '#3a5a8c' },
+  { name: 'Shopping', kind: 'expense', icon: '\ud83d\udecd\ufe0f', color: '#a85d7a' },
+  { name: 'Entertainment', kind: 'expense', icon: '\ud83c\udfac', color: '#7c5cad' },
+  { name: 'Health', kind: 'expense', icon: '\u2695\ufe0f', color: '#b23f2e' },
+  { name: 'Bills & utilities', kind: 'expense', icon: '\ud83d\udca1', color: '#b07d2b' },
+  { name: 'Rent & housing', kind: 'expense', icon: '\ud83c\udfe0', color: '#5c5346' },
+  { name: 'Subscriptions', kind: 'expense', icon: '\ud83d\udd01', color: '#2e7d8c' },
+  { name: 'Travel', kind: 'expense', icon: '\u2708\ufe0f', color: '#1d6e5a' },
+  { name: 'Education', kind: 'expense', icon: '\ud83c\udf93', color: '#3a5a8c' },
+  { name: 'Personal care', kind: 'expense', icon: '\ud83e\uddf4', color: '#a85d7a' },
+  { name: 'Miscellaneous', kind: 'expense', icon: '\u2728', color: '#847c6e' },
+  { name: 'Salary', kind: 'income', icon: '\ud83d\udcbc', color: '#1d6e5a' },
+  { name: 'Freelance', kind: 'income', icon: '\ud83e\uddd1\u200d\ud83d\udcbb', color: '#2e7d8c' },
+  { name: 'Investments', kind: 'income', icon: '\ud83d\udcc8', color: '#b07d2b' },
+  { name: 'Gifts', kind: 'income', icon: '\ud83c\udf81', color: '#a85d7a' },
+  { name: 'Refunds', kind: 'income', icon: '\u21a9\ufe0f', color: '#3a5a8c' },
+  { name: 'Other income', kind: 'income', icon: '\u2795', color: '#847c6e' }
+] as const

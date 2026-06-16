@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f6f3ec;
+  --surface: #fffdf8;
+  --surface-2: #efeadf;
+  --ink: #211d18;
+  --ink-soft: #847c6e;
+  --line: #e5dfd2;
+  --accent: #1d6e5a;
+  --accent-ink: #f6f3ec;
+  --accent-soft: #e0ece6;
+  --positive: #1d6e5a;
+  --negative: #b23f2e;
+  --warn: #c27d1e;
+}
+.dark {
+  --bg: #161411;
+  --surface: #1f1c18;
+  --surface-2: #27231e;
+  --ink: #ece7dc;
+  --ink-soft: #9b937f;
+  --line: #332e27;
+  --accent: #3ba183;
+  --accent-ink: #10130f;
+  --accent-soft: #243832;
+  --positive: #4cae8f;
+  --negative: #e06b54;
+  --warn: #f0b053;
+}
+
+html, body, #root { height: 100%; }
+body { @apply bg-bg text-ink font-sans antialiased; }
+::selection { background: var(--accent-soft); }
+
+input[type='number'] { -moz-appearance: textfield; }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.25s ease both; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+.fadein { animation: fadein 0.2s ease both; }
+
+/* ---- Elevation system (mirrors the login page depth) ---- */
+/* Tuned by environment: cards lift gently, modals lift strongly, buttons get a soft glow. */
+.elev-1 { box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px -6px rgba(15, 23, 42, 0.08); }
+.elev-2 { box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 10px 28px -14px rgba(15, 23, 42, 0.18); }
+.elev-3 { box-shadow: 0 12px 32px -16px rgba(15, 23, 42, 0.22), 0 24px 60px -28px rgba(15, 23, 42, 0.28); }
+.elev-4 { box-shadow: 0 18px 40px -20px rgba(15, 23, 42, 0.28), 0 30px 80px -30px rgba(15, 23, 42, 0.30); }
+.dark .elev-1 { box-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 4px 12px -6px rgba(0,0,0,0.5); }
+.dark .elev-2 { box-shadow: 0 2px 4px rgba(0,0,0,0.45), 0 10px 28px -14px rgba(0,0,0,0.6); }
+.dark .elev-3 { box-shadow: 0 12px 32px -16px rgba(0,0,0,0.65), 0 24px 60px -28px rgba(0,0,0,0.75); }
+.dark .elev-4 { box-shadow: 0 18px 40px -20px rgba(0,0,0,0.7), 0 30px 80px -30px rgba(0,0,0,0.8); }
+
+/* Hover lift used on actionable surfaces */
+.lift { transition: transform .2s ease, box-shadow .2s ease; }
+.lift:hover { transform: translateY(-1px); }
+
+/* Ambient backdrop: soft brand-tone orbs, low contrast, decorative only */
+.ambient-bg { position: relative; }
+.ambient-bg::before,
+.ambient-bg::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.55;
+  z-index: 0;
+}
+.ambient-bg::before {
+  top: -10rem; left: -8rem;
+  width: 28rem; height: 28rem;
+  background: var(--accent-soft);
+}
+.ambient-bg::after {
+  bottom: -12rem; right: -8rem;
+  width: 32rem; height: 32rem;
+  background: var(--accent-soft);
+  opacity: 0.4;
+}
+.dark .ambient-bg::before { opacity: 0.25; }
+.dark .ambient-bg::after { opacity: 0.18; }
