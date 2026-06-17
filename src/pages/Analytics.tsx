@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
-import { addDays, addMonths, differenceInDays, format, parseISO, startOfMonth, startOfQuarter, startOfWeek, startOfYear, subDays, subMonths } from 'date-fns'
+import { addDays, addMonths, differenceInDays, endOfMonth, format, parseISO, startOfMonth, startOfQuarter, startOfYear, subDays, subMonths } from 'date-fns'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useCategories, useMoneyFmt, useTransactions } from '../api'
-import { Card, EmptyState, Segmented, cls } from '../components/ui'
+import { Card, EmptyState, Segmented, Select, cls } from '../components/ui'
 import { buildInsights, expenseByCategory, periodTotals } from '../lib/insights'
 import type { Category, Transaction } from '../types'
 
-type Range = 'week' | 'month' | 'quarter' | 'year' | 'all'
+type Range = 'month' | 'quarter' | 'year' | 'all' | 'specific'
 
 export default function Analytics() {
   const { data: txs = [] } = useTransactions()
@@ -14,28 +14,41 @@ export default function Analytics() {
 
   const fmt = useMoneyFmt()
   const [range, setRange] = useState<Range>('month')
+  const [specificMonth, setSpecificMonth] = useState<string>('') // 'yyyy-MM'
   const [drillCatId, setDrillCatId] = useState<string | null>(null)
 
-  const today = format(new Date(), 'yyyy-MM-dd')
 
-  const { start, prevStart, prevEnd } = useMemo(() => {
+
+  // Months that contain data (desc)
+  const availableMonths = useMemo(() => {
+    const set = new Set<string>()
+    for (const t of txs) set.add(t.date.slice(0, 7))
+    return [...set].sort((a, b) => b.localeCompare(a))
+  }, [txs])
+
+  const { start, end, prevStart, prevEnd } = useMemo(() => {
     const now = new Date()
     let s: Date
-    if (range === 'week') s = startOfWeek(now, { weekStartsOn: 1 })
-    else if (range === 'month') s = startOfMonth(now)
+    let e: Date = now
+    if (range === 'specific' && specificMonth) {
+      s = parseISO(specificMonth + '-01')
+      e = endOfMonth(s)
+    } else if (range === 'month') s = startOfMonth(now)
     else if (range === 'quarter') s = startOfQuarter(now)
     else if (range === 'year') s = startOfYear(now)
     else s = txs.length ? parseISO(txs[txs.length - 1].date) : now
-    const len = differenceInDays(now, s) + 1
+    const len = differenceInDays(e, s) + 1
     return {
       start: format(s, 'yyyy-MM-dd'),
+      end: format(e, 'yyyy-MM-dd'),
       prevEnd: format(subDays(s, 1), 'yyyy-MM-dd'),
       prevStart: format(subDays(s, len), 'yyyy-MM-dd')
     }
-  }, [range, txs])
+  }, [range, specificMonth, txs])
 
-  const curTxs = useMemo(() => txs.filter(t => t.date >= start && t.date <= today), [txs, start, today])
+  const curTxs = useMemo(() => txs.filter(t => t.date >= start && t.date <= end), [txs, start, end])
   const prevTxs = useMemo(() => (range === 'all' ? [] : txs.filter(t => t.date >= prevStart && t.date <= prevEnd)), [txs, prevStart, prevEnd, range])
+
 
   const totals = periodTotals(curTxs)
   const prevTotals = periodTotals(prevTxs)
@@ -44,15 +57,15 @@ export default function Analytics() {
 
   // Daily/period trend
   const trend = useMemo(() => {
-    const byDay = range === 'week' || range === 'month'
+    const byDay = range === 'month' || range === 'specific'
     const map = new Map<string, { income: number; expense: number }>()
-    const end = new Date()
+    const endDate = parseISO(end)
     if (byDay) {
       let d = parseISO(start)
-      while (d <= end) { map.set(format(d, 'yyyy-MM-dd'), { income: 0, expense: 0 }); d = addDays(d, 1) }
+      while (d <= endDate) { map.set(format(d, 'yyyy-MM-dd'), { income: 0, expense: 0 }); d = addDays(d, 1) }
     } else {
       let d = startOfMonth(parseISO(start))
-      while (d <= end) { map.set(format(d, 'yyyy-MM'), { income: 0, expense: 0 }); d = addMonths(d, 1) }
+      while (d <= endDate) { map.set(format(d, 'yyyy-MM'), { income: 0, expense: 0 }); d = addMonths(d, 1) }
     }
     for (const t of curTxs) {
       const key = byDay ? t.date : t.date.slice(0, 7)
@@ -144,12 +157,31 @@ export default function Analytics() {
     <div className="rise space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-2xl font-semibold">Insights</h1>
-        <Segmented
-          value={range}
-          onChange={setRange}
-          options={[{ value: 'week', label: 'W' }, { value: 'month', label: 'M' }, { value: 'quarter', label: 'Q' }, { value: 'year', label: 'Y' }, { value: 'all', label: 'All' }]}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <Segmented
+            value={range === 'specific' ? 'month' : range}
+            onChange={(v) => { setRange(v); setSpecificMonth('') }}
+            options={[{ value: 'month', label: 'M' }, { value: 'quarter', label: 'Q' }, { value: 'year', label: 'Y' }, { value: 'all', label: 'All' }]}
+          />
+          {availableMonths.length > 0 && (
+            <Select
+              value={range === 'specific' ? specificMonth : ''}
+              onChange={(e) => {
+                const v = e.target.value
+                if (v) { setSpecificMonth(v); setRange('specific') }
+                else { setSpecificMonth(''); setRange('month') }
+              }}
+              aria-label="Pick a month"
+            >
+              <option value="">Pick a month…</option>
+              {availableMonths.map(m => (
+                <option key={m} value={m}>{format(parseISO(m + '-01'), 'MMM yyyy')}</option>
+              ))}
+            </Select>
+          )}
+        </div>
       </header>
+
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
