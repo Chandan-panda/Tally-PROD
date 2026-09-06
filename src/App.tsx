@@ -21,9 +21,20 @@ const qc = new QueryClient({
 })
 
 function Gate() {
-  const { session, loading } = useAuth()
-  if (loading) return <div className="grid h-full place-items-center"><Spinner /></div>
-  if (!session) return <AuthPage />
+  const { session, loading, isGuest } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="grid h-full place-items-center bg-bg">
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (!session && !isGuest) {
+    return <AuthPage />
+  }
+
   return <Shell />
 }
 

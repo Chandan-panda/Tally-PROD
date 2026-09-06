@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { supabase, supabaseConfigured } from '../lib/supabase'
 import { Button, Field, Input, Select, cls } from '../components/ui'
+import { useAuth } from '../auth'
 
 type Gender = 'male' | 'female' | 'other' | 'prefer_not_to_say'
 
@@ -59,7 +60,8 @@ function PasswordInput({
   )
 }
 
-export default function AuthPage() {
+export default function AuthPage({ embedded = false }: { embedded?: boolean }) {
+  const { enterGuest } = useAuth()
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -109,7 +111,12 @@ export default function AuthPage() {
   const isSignup = mode === 'signup'
 
   return (
-    <div className="relative flex min-h-full items-center justify-center overflow-hidden bg-bg p-6">
+    <div
+      className={cls(
+        'relative flex min-h-full items-center justify-center overflow-hidden bg-bg',
+        embedded ? 'p-0' : 'p-6'
+      )}
+    >
       {/* Ambient depth */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
@@ -117,16 +124,27 @@ export default function AuthPage() {
         <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pos/10 blur-3xl" />
       </div>
 
-      <div className="absolute left-6 top-6 z-10 flex items-center gap-2.5">
-        <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent font-display text-lg font-semibold text-accentink shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]">T</div>
-        <span className="font-display text-xl font-semibold tracking-tight">Tally</span>
-      </div>
+      {!embedded && (
+        <div className="absolute left-6 top-6 z-10 flex items-center gap-2.5">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent font-display text-lg font-semibold text-accentink shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]">
+            T
+          </div>
+          <span className="font-display text-xl font-semibold tracking-tight">
+            Tally
+          </span>
+        </div>
+      )}
 
-      <div className="relative z-10 w-full max-w-md">
+      <div className={cls('relative z-10 w-full', embedded ? 'max-w-none' : 'max-w-md')}>
         <div aria-hidden className="absolute inset-x-6 -bottom-3 h-8 rounded-3xl bg-ink/5 blur-xl" />
         <div aria-hidden className="absolute inset-x-3 -bottom-1.5 h-6 rounded-3xl border border-line/60 bg-surface/70" />
 
-        <div className="rise relative rounded-3xl border border-line bg-surface p-8 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.25),0_8px_24px_-12px_rgba(15,23,42,0.15)] sm:p-10">
+        <div
+            className={cls(
+              'rise relative rounded-3xl border border-line bg-surface p-8 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.25),0_8px_24px_-12px_rgba(15,23,42,0.15)] sm:p-10',
+              embedded && 'border-0 bg-transparent p-0 shadow-none'
+            )}
+          >
           <div className="text-center">
             <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-[2rem]">
               {isSignup ? 'Create your account' : 'Welcome back'}
@@ -223,10 +241,23 @@ export default function AuthPage() {
             </button>
           </div>
         </div>
-
-        <p className="mt-8 text-center text-xs text-soft">
+            {!embedded && (
+            <div className="mt-3">
+              <Button
+                type="button"
+                variant="soft"
+                className="w-full rounded-full py-3"
+                onClick={enterGuest}
+              >
+                Explore with sample data
+              </Button>
+            </div>
+          )}
+        {!embedded && (
+          <p className="mt-8 text-center text-xs text-soft">
           🔒 Private by design. Your data is yours alone.
         </p>
+        )}
       </div>
     </div>
   )

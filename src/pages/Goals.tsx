@@ -5,8 +5,10 @@ import { Button, Card, EmptyState, Field, Input, Modal, Progress, cls } from '..
 import { todayISO } from '../lib/format'
 import { useUI } from '../store'
 import { PALETTE, type Goal } from '../types'
+import { useAuth } from '../auth'
 
 export default function Goals() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: goals = [] } = useGoals()
   const { data: contributions = [] } = useGoalContributions()
   const saveGoal = useSaveGoal()
@@ -71,11 +73,25 @@ export default function Goals() {
           <h1 className="font-display text-2xl font-semibold">Savings goals</h1>
           <p className="text-sm text-soft">Put a name and a number on what you're saving for.</p>
         </div>
-        <Button onClick={() => openForm()}>+ Goal</Button>
+        <Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>+ Goal</Button>
       </header>
 
       {goals.length === 0 ? (
-        <EmptyState icon="🎯" title="No goals yet" body="An emergency fund, a trip, a new laptop — give your savings a destination." action={<Button onClick={() => openForm()}>Create a goal</Button>} />
+        <EmptyState icon="🎯" title="No goals yet" body="An emergency fund, a trip, a new laptop — give your savings a destination." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>Create a goal</Button>} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {goals.map(g => {
@@ -95,7 +111,14 @@ export default function Goals() {
                       </p>
                     </div>
                   </div>
-                  <button onClick={() => openForm(g)} className="text-xs text-soft hover:text-ink">Edit</button>
+                  <button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm(g)
+}} className="text-xs text-soft hover:text-ink">Edit</button>
                 </div>
                 <p className="mb-2 font-display text-2xl font-semibold tabular-nums">
                   {fmt(saved)} <span className="text-sm font-normal text-soft">of {fmt(Number(g.target_amount))}</span>

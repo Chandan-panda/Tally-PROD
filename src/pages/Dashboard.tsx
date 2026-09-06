@@ -10,8 +10,10 @@ import { buildInsights, periodTotals } from '../lib/insights'
 import { upcomingOccurrences } from '../lib/recurring'
 import { useUI } from '../store'
 import type { Transaction } from '../types'
+import { useAuth } from '../auth'
 
 export default function Dashboard() {
+  const { isGuest, requireAuth } = useAuth()
   const { isLoading: la } = useAccounts()
   const { data: txs = [], isLoading: lt } = useTransactions()
   const { data: categories = [] } = useCategories()
@@ -84,7 +86,14 @@ export default function Dashboard() {
             <Link to="/transactions" className="text-sm text-accent hover:underline">See all</Link>
           </div>
           {txs.length === 0 ? (
-            <EmptyState icon="✍️" title="No transactions yet" body="Log your first income or expense to bring Tally to life." action={<Button onClick={() => setTxFormOpen(true)}>Add transaction</Button>} />
+            <EmptyState icon="✍️" title="No transactions yet" body="Log your first income or expense to bring Tally to life." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  setTxFormOpen(true)
+}}>Add transaction</Button>} />
           ) : (
             <div className="-mx-2">{txs.slice(0, 6).map(t => <TxRow key={t.id} tx={t} onClick={() => setEditTx(t)} />)}</div>
           )}

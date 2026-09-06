@@ -4,8 +4,10 @@ import { useBudgets, useCategories, useDeleteBudget, useMoneyFmt, useSaveBudget,
 import { Button, Card, EmptyState, Field, Input, Modal, Progress, Select, cls } from '../components/ui'
 import { useUI } from '../store'
 import type { Budget } from '../types'
+import { useAuth } from '../auth'
 
 export default function Budgets() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: budgets = [] } = useBudgets()
   const { data: categories = [] } = useCategories()
   const { data: txs = [] } = useTransactions()
@@ -64,12 +66,26 @@ export default function Budgets() {
           <button onClick={() => setMonth(m => subMonths(m, 1))} className="grid h-9 w-9 place-items-center rounded-xl border border-line hover:bg-surface2">‹</button>
           <span className="w-32 text-center text-sm font-medium">{format(month, 'MMMM yyyy')}</span>
           <button onClick={() => setMonth(m => addMonths(m, 1))} className="grid h-9 w-9 place-items-center rounded-xl border border-line hover:bg-surface2">›</button>
-          <Button onClick={() => openForm()}>+ Budget</Button>
+          <Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>+ Budget</Button>
         </div>
       </header>
 
       {rows.length === 0 ? (
-        <EmptyState icon="⚖️" title="No budgets yet" body="Set a monthly limit for any expense category and Tally will track you against it." action={<Button onClick={() => openForm()}>Create a budget</Button>} />
+        <EmptyState icon="⚖️" title="No budgets yet" body="Set a monthly limit for any expense category and Tally will track you against it." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>Create a budget</Button>} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {rows.map(({ b, cat, spent, usage }) => (
@@ -82,7 +98,14 @@ export default function Budgets() {
                     <p className="text-xs text-soft">{Math.round(usage * 100)}% used</p>
                   </div>
                 </div>
-                <button onClick={() => openForm(b)} className="text-xs text-soft hover:text-ink">Edit</button>
+                <button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm(b)
+}} className="text-xs text-soft hover:text-ink">Edit</button>
               </div>
               <Progress value={usage} color={usage > 1 ? 'var(--negative)' : cat?.color} />
               <div className="mt-2 flex justify-between text-sm">

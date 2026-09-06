@@ -26,7 +26,9 @@ export default function More() {
           </Link>
         ))}
       </div>
-      <button onClick={() => supabase.auth.signOut()} className="text-sm text-neg hover:underline">Sign out</button>
+      <button onClick={() => supabase.auth.signOut({
+  scope: 'local'
+})} className="text-sm text-neg hover:underline">Sign out</button>
     </div>
   )
 }

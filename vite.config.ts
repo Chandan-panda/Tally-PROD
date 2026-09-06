@@ -12,8 +12,10 @@ export default defineConfig({
         name: 'Tally — Personal Finance',
         short_name: 'Tally',
         description: 'Keep count of what counts — a beautiful, complete personal expense tracker.',
-        theme_color: '#f6f3ec',
-        background_color: '#f6f3ec',
+        // theme_color: '#f6f3ec',
+        // background_color: '#f6f3ec',
+        theme_color: '#edf2ef',
+        background_color: '#edf2ef',
         display: 'standalone',
         start_url: '/',
         icons: [

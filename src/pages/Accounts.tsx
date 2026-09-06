@@ -5,8 +5,10 @@ import { Button, Card, EmptyState, Field, Input, Modal, Money, Select, cls } fro
 import { accountBalance, netWorth } from '../lib/finance'
 import { useUI } from '../store'
 import { ACCOUNT_TYPES, PALETTE, type Account } from '../types'
+import { useAuth } from '../auth'
 
 export default function Accounts() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: accounts = [] } = useAccounts()
   const { data: txs = [] } = useTransactions()
   const save = useSaveAccount()
@@ -73,7 +75,14 @@ export default function Accounts() {
           <p className={cls('font-display text-lg font-semibold tabular-nums', bal < 0 && 'text-neg')}><Money n={bal} /></p>
           <div className="mt-0.5 flex justify-end gap-2 text-xs">
             <Link to={`/transactions?account=${a.id}`} className="text-accent hover:underline">Activity</Link>
-            <button onClick={() => openForm(a)} className="text-soft hover:text-ink">Edit</button>
+            <button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}} className="text-soft hover:text-ink">Edit</button>
             <button onClick={() => toggleArchive(a)} className="text-soft hover:text-ink">{a.archived ? 'Restore' : 'Archive'}</button>
           </div>
         </div>
@@ -88,7 +97,14 @@ export default function Accounts() {
           <h1 className="font-display text-2xl font-semibold">Accounts</h1>
           <p className="text-sm text-soft">Net worth: <Money n={worth} className="font-semibold text-ink" /></p>
         </div>
-        <Button onClick={() => openForm()}>+ Account</Button>
+        <Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>+ Account</Button>
       </header>
 
       {active.length === 0 ? (

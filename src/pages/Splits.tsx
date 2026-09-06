@@ -4,10 +4,12 @@ import { Button, Card, EmptyState, Field, Input, Modal, cls } from '../component
 import { shortDate, todayISO } from '../lib/format'
 import { useUI } from '../store'
 import type { Split } from '../types'
+import { useAuth } from '../auth'
 
 interface ShareRow { person: string; amount: string; settled: boolean }
 
 export default function Splits() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: splits = [] } = useSplits()
   const save = useSaveSplit()
   const del = useDeleteSplit()
@@ -78,7 +80,14 @@ export default function Splits() {
           <h1 className="font-display text-2xl font-semibold">Splits</h1>
           <p className="text-sm text-soft">Track who owes you what, and settle up cleanly.</p>
         </div>
-        <Button onClick={() => openForm()}>+ Split</Button>
+        <Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>+ Split</Button>
       </header>
 
       {balances.length > 0 && (
@@ -93,7 +102,14 @@ export default function Splits() {
       )}
 
       {splits.length === 0 ? (
-        <EmptyState icon="🤝" title="No shared expenses" body="Dinner with friends, shared rent, group trips — record who owes what and never chase payments from memory." action={<Button onClick={() => openForm()}>Record a split</Button>} />
+        <EmptyState icon="🤝" title="No shared expenses" body="Dinner with friends, shared rent, group trips — record who owes what and never chase payments from memory." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>Record a split</Button>} />
       ) : (
         <div className="space-y-3">
           {splits.map(s => {
@@ -105,7 +121,14 @@ export default function Splits() {
                     <p className="font-medium">{s.description}</p>
                     <p className="text-xs text-soft">{shortDate(s.date)} · total {fmt(Number(s.total_amount))}{unsettled > 0 ? ` · ${fmt(unsettled)} pending` : ' · all settled ✓'}</p>
                   </div>
-                  <button onClick={() => openForm(s)} className="shrink-0 text-xs text-soft hover:text-ink">Edit</button>
+                  <button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm(s)
+}} className="shrink-0 text-xs text-soft hover:text-ink">Edit</button>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {(s.shares || []).map(sh => (
