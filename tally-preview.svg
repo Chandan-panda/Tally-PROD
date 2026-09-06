@@ -1,0 +1,112 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="30" y1="20" x2="1380" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F8F5"/>
+      <stop offset="1" stop-color="#E7EFEB"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="20" y1="20" x2="420" y2="310" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#238C80"/>
+      <stop offset="1" stop-color="#0E504F"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#12332F" flood-opacity="0.12"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#12332F" flood-opacity="0.08"/></filter>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4DB7A7"/><stop offset="1" stop-color="#176F68"/></linearGradient>
+  </defs>
+
+  <rect width="1400" height="820" rx="34" fill="url(#bg)"/>
+  <circle cx="1240" cy="100" r="180" fill="#54B9A7" fill-opacity="0.08"/>
+  <circle cx="150" cy="730" r="220" fill="#B07B2E" fill-opacity="0.07"/>
+
+  <!-- Sidebar -->
+  <rect x="28" y="28" width="230" height="764" rx="26" fill="#10252A" filter="url(#shadow)"/>
+  <rect x="52" y="54" width="42" height="42" rx="12" fill="url(#hero)"/>
+  <path d="M62 82L74 70L84 77L96 61" stroke="#E8BD68" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="108" y="83" fill="#F3FAF7" font-family="Arial, sans-serif" font-size="24" font-weight="700">Tally</text>
+
+  <rect x="48" y="135" width="190" height="44" rx="14" fill="#176F68"/>
+  <text x="72" y="163" fill="#F3FAF7" font-family="Arial, sans-serif" font-size="15" font-weight="700">Overview</text>
+  <text x="72" y="216" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Transactions</text>
+  <text x="72" y="264" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Analytics</text>
+  <text x="72" y="312" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Calendar</text>
+  <text x="72" y="360" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Budgets</text>
+  <text x="72" y="408" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Goals</text>
+  <text x="72" y="456" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Accounts</text>
+  <text x="72" y="504" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Recurring</text>
+  <text x="72" y="552" fill="#90A6A2" font-family="Arial, sans-serif" font-size="15">Splits</text>
+
+  <rect x="48" y="690" width="190" height="72" rx="18" fill="#17343A"/>
+  <text x="68" y="719" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">DEMO MODE</text>
+  <text x="68" y="741" fill="#F3FAF7" font-family="Arial, sans-serif" font-size="13">Explore with sample data</text>
+
+  <!-- Header -->
+  <text x="292" y="82" fill="#10252A" font-family="Arial, sans-serif" font-size="34" font-weight="800">Good morning, explorer.</text>
+  <text x="292" y="114" fill="#657A78" font-family="Arial, sans-serif" font-size="15">Your money, one calm place.</text>
+  <rect x="1138" y="52" width="132" height="40" rx="20" fill="#176F68" filter="url(#soft)"/>
+  <text x="1170" y="77" fill="#F3FAF7" font-family="Arial, sans-serif" font-size="14" font-weight="700">+ Transaction</text>
+
+  <!-- Hero balance -->
+  <rect x="292" y="150" width="480" height="245" rx="28" fill="url(#hero)" filter="url(#shadow)"/>
+  <text x="326" y="192" fill="#C6E6DE" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.3">TOTAL BALANCE</text>
+  <text x="326" y="252" fill="#FFFFFF" font-family="Georgia, serif" font-size="52" font-weight="700">₹68,420</text>
+  <text x="326" y="281" fill="#C6E6DE" font-family="Arial, sans-serif" font-size="14">+8.4% from last month</text>
+  <path d="M326 345C380 313 413 331 454 310C504 285 533 333 584 295C625 264 677 289 734 254" stroke="#E8BD68" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="734" cy="254" r="7" fill="#E8BD68"/>
+
+  <!-- KPI cards -->
+  <rect x="798" y="150" width="180" height="112" rx="24" fill="#FFFEFB" stroke="#D8E2DE" filter="url(#soft)"/>
+  <text x="820" y="182" fill="#657A78" font-family="Arial, sans-serif" font-size="12" font-weight="700">INCOME</text>
+  <text x="820" y="221" fill="#176F68" font-family="Arial, sans-serif" font-size="25" font-weight="800">₹85,000</text>
+  <text x="820" y="244" fill="#657A78" font-family="Arial, sans-serif" font-size="11">this month</text>
+  <rect x="996" y="150" width="180" height="112" rx="24" fill="#FFFEFB" stroke="#D8E2DE" filter="url(#soft)"/>
+  <text x="1018" y="182" fill="#657A78" font-family="Arial, sans-serif" font-size="12" font-weight="700">SPENDING</text>
+  <text x="1018" y="221" fill="#BD5A4A" font-family="Arial, sans-serif" font-size="25" font-weight="800">₹33,880</text>
+  <text x="1018" y="244" fill="#657A78" font-family="Arial, sans-serif" font-size="11">this month</text>
+
+  <!-- Chart -->
+  <rect x="292" y="425" width="692" height="335" rx="28" fill="#FFFEFB" stroke="#D8E2DE" filter="url(#soft)"/>
+  <text x="322" y="464" fill="#10252A" font-family="Arial, sans-serif" font-size="18" font-weight="800">Money flow</text>
+  <text x="322" y="487" fill="#657A78" font-family="Arial, sans-serif" font-size="12">Income vs spending</text>
+  <line x1="332" y1="708" x2="950" y2="708" stroke="#E2E9E6"/>
+  <line x1="332" y1="655" x2="950" y2="655" stroke="#EEF2F0"/>
+  <line x1="332" y1="602" x2="950" y2="602" stroke="#EEF2F0"/>
+  <line x1="332" y1="549" x2="950" y2="549" stroke="#EEF2F0"/>
+  <rect x="368" y="601" width="26" height="107" rx="9" fill="#A9D9D1"/>
+  <rect x="398" y="566" width="26" height="142" rx="9" fill="url(#bar)"/>
+  <rect x="476" y="580" width="26" height="128" rx="9" fill="#A9D9D1"/>
+  <rect x="506" y="520" width="26" height="188" rx="9" fill="url(#bar)"/>
+  <rect x="584" y="614" width="26" height="94" rx="9" fill="#A9D9D1"/>
+  <rect x="614" y="548" width="26" height="160" rx="9" fill="url(#bar)"/>
+  <rect x="692" y="592" width="26" height="116" rx="9" fill="#A9D9D1"/>
+  <rect x="722" y="535" width="26" height="173" rx="9" fill="url(#bar)"/>
+  <rect x="800" y="626" width="26" height="82" rx="9" fill="#A9D9D1"/>
+  <rect x="830" y="558" width="26" height="150" rx="9" fill="url(#bar)"/>
+  <text x="365" y="732" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">May</text>
+  <text x="473" y="732" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">Jun</text>
+  <text x="581" y="732" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">Jul</text>
+  <text x="689" y="732" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">Aug</text>
+  <text x="797" y="732" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">Sep</text>
+
+  <!-- Right widgets -->
+  <rect x="1006" y="293" width="366" height="220" rx="28" fill="#FFFEFB" stroke="#D8E2DE" filter="url(#soft)"/>
+  <text x="1036" y="331" fill="#10252A" font-family="Arial, sans-serif" font-size="18" font-weight="800">Budget health</text>
+  <text x="1036" y="354" fill="#657A78" font-family="Arial, sans-serif" font-size="12">September</text>
+  <circle cx="1104" cy="425" r="55" stroke="#E3ECE8" stroke-width="14"/>
+  <path d="M1104 370A55 55 0 0 1 1153 450" stroke="#176F68" stroke-width="14" stroke-linecap="round"/>
+  <text x="1080" y="430" fill="#10252A" font-family="Arial, sans-serif" font-size="20" font-weight="800">72%</text>
+  <text x="1176" y="399" fill="#657A78" font-family="Arial, sans-serif" font-size="12">Groceries</text>
+  <rect x="1176" y="408" width="154" height="8" rx="4" fill="#E8EFEC"/><rect x="1176" y="408" width="106" height="8" rx="4" fill="#7DAF9B"/>
+  <text x="1176" y="438" fill="#657A78" font-family="Arial, sans-serif" font-size="12">Dining</text>
+  <rect x="1176" y="447" width="154" height="8" rx="4" fill="#E8EFEC"/><rect x="1176" y="447" width="78" height="8" rx="4" fill="#D29A43"/>
+
+  <rect x="1006" y="536" width="366" height="224" rx="28" fill="#FFFEFB" stroke="#D8E2DE" filter="url(#soft)"/>
+  <text x="1036" y="574" fill="#10252A" font-family="Arial, sans-serif" font-size="18" font-weight="800">Savings goals</text>
+  <text x="1036" y="597" fill="#657A78" font-family="Arial, sans-serif" font-size="12">Keep moving forward</text>
+  <text x="1036" y="638" fill="#10252A" font-family="Arial, sans-serif" font-size="14" font-weight="700">Japan trip</text>
+  <text x="1292" y="638" fill="#176F68" font-family="Arial, sans-serif" font-size="12" font-weight="700">36%</text>
+  <rect x="1036" y="651" width="294" height="10" rx="5" fill="#E8EFEC"/><rect x="1036" y="651" width="106" height="10" rx="5" fill="#176F68"/>
+  <text x="1036" y="688" fill="#10252A" font-family="Arial, sans-serif" font-size="14" font-weight="700">Emergency reserve</text>
+  <text x="1292" y="688" fill="#176F68" font-family="Arial, sans-serif" font-size="12" font-weight="700">48%</text>
+  <rect x="1036" y="701" width="294" height="10" rx="5" fill="#E8EFEC"/><rect x="1036" y="701" width="141" height="10" rx="5" fill="#54B9A7"/>
+
+  <text x="1036" y="744" fill="#8FA6A1" font-family="Arial, sans-serif" font-size="11">Illustrative interface preview</text>
+</svg>
