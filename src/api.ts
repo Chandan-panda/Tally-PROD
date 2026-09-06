@@ -1,3 +1,4 @@
+import { demoRows, DEMO_PROFILE } from './lib/demoData'
 import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from './lib/supabase'
@@ -7,19 +8,33 @@ import type { Account, Budget, Category, Goal, GoalContribution, Profile, Recurr
 
 export function useUid() {
   const { session } = useAuth()
-  return session?.user.id as string
+  return session?.user.id
 }
 
 function useTable<T>(table: string, order?: { col: string; asc?: boolean }) {
-  const uid = useUid()
+  const { session, isGuest } = useAuth()
+  const uid = session?.user.id
+
   return useQuery({
-    queryKey: [table, uid],
-    enabled: !!uid,
+    queryKey: [table, isGuest ? 'guest' : uid],
+    enabled: Boolean(uid || isGuest),
     queryFn: async () => {
+      if (isGuest) {
+        return demoRows<T>(table as any)
+      }
+
       let q = supabase.from(table).select('*').eq('user_id', uid)
-      if (order) q = q.order(order.col, { ascending: order.asc ?? true })
+
+      if (order) {
+        q = q.order(order.col, {
+          ascending: order.asc ?? true
+        })
+      }
+
       const { data, error } = await q
+
       if (error) throw error
+
       return data as T[]
     }
   })
@@ -45,41 +60,76 @@ export const useGoalContributions = () => useTable<GoalContribution>('goal_contr
 export const useRecurringRules = () => useTable<RecurringRule>('recurring_rules', { col: 'next_date' })
 
 export function useTransactions() {
-  const uid = useUid()
+  const { session, isGuest } = useAuth()
+  const uid = session?.user.id
+
   return useQuery({
-    queryKey: ['transactions', uid],
-    enabled: !!uid,
+    queryKey: ['transactions', isGuest ? 'guest' : uid],
+    enabled: Boolean(uid || isGuest),
     queryFn: async () => {
-      const { data, error } = await supabase.from('transactions').select('*').eq('user_id', uid)
-        .order('date', { ascending: false }).order('created_at', { ascending: false })
+      if (isGuest) {
+        return demoRows<Transaction>('transactions')
+      }
+
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', uid)
+        .order('date', { ascending: false })
+        .order('created_at', { ascending: false })
+
       if (error) throw error
+
       return data as Transaction[]
     }
   })
 }
 
 export function useSplits() {
-  const uid = useUid()
+  const { session, isGuest } = useAuth()
+  const uid = session?.user.id
+
   return useQuery({
-    queryKey: ['splits', uid],
-    enabled: !!uid,
+    queryKey: ['splits', isGuest ? 'guest' : uid],
+    enabled: Boolean(uid || isGuest),
     queryFn: async () => {
-      const { data, error } = await supabase.from('splits').select('*, shares:split_shares(*)').eq('user_id', uid)
+      if (isGuest) {
+        return demoRows<Split>('splits')
+      }
+
+      const { data, error } = await supabase
+        .from('splits')
+        .select('*, shares:split_shares(*)')
+        .eq('user_id', uid)
         .order('date', { ascending: false })
+
       if (error) throw error
+
       return data as Split[]
     }
   })
 }
 
 export function useProfile() {
-  const uid = useUid()
+  const { session, isGuest } = useAuth()
+  const uid = session?.user.id
+
   return useQuery({
-    queryKey: ['profile', uid],
-    enabled: !!uid,
+    queryKey: ['profile', isGuest ? 'guest' : uid],
+    enabled: Boolean(uid || isGuest),
     queryFn: async () => {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle()
+      if (isGuest) {
+        return DEMO_PROFILE
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', uid)
+        .maybeSingle()
+
       if (error) throw error
+
       return data as Profile | null
     }
   })
@@ -92,31 +142,72 @@ export function useMoneyFmt() {
 
 /** Generic save (insert when no id, update when id present) + delete mutations per table. */
 function useSave(table: string, keys: string[]) {
-  const uid = useUid()
+  const { session, isGuest, requireAuth } = useAuth()
+  const uid = session?.user.id
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: async (row: Record<string, unknown>) => {
+      if (isGuest) {
+        requireAuth()
+        throw new Error('AUTH_REQUIRED')
+      }
+
+      if (!uid) {
+        throw new Error('No authenticated user')
+      }
+
       const { id, ...rest } = row
+
       if (id) {
-        const { error } = await supabase.from(table).update(rest).eq('id', id)
+        const { error } = await supabase
+          .from(table)
+          .update(rest)
+          .eq('id', id)
+
         if (error) throw error
       } else {
-        const { error } = await supabase.from(table).insert({ ...rest, user_id: uid })
+        const { error } = await supabase
+          .from(table)
+          .insert({
+            ...rest,
+            user_id: uid
+          })
+
         if (error) throw error
       }
     },
-    onSuccess: () => keys.forEach(k => qc.invalidateQueries({ queryKey: [k] }))
+    onSuccess: () => {
+      keys.forEach(key => {
+        qc.invalidateQueries({ queryKey: [key] })
+      })
+    }
   })
 }
 
 function useRemove(table: string, keys: string[]) {
+  const { isGuest, requireAuth } = useAuth()
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(table).delete().eq('id', id)
+      if (isGuest) {
+        requireAuth()
+        throw new Error('AUTH_REQUIRED')
+      }
+
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq('id', id)
+
       if (error) throw error
     },
-    onSuccess: () => keys.forEach(k => qc.invalidateQueries({ queryKey: [k] }))
+    onSuccess: () => {
+      keys.forEach(key => {
+        qc.invalidateQueries({ queryKey: [key] })
+      })
+    }
   })
 }
 
@@ -136,22 +227,48 @@ export const useSaveRule = () => useSave('recurring_rules', ['recurring_rules'])
 export const useDeleteRule = () => useRemove('recurring_rules', ['recurring_rules'])
 
 export function useSaveProfile() {
-  const uid = useUid()
+  const { session, isGuest, requireAuth } = useAuth()
+  const uid = session?.user.id
   const qc = useQueryClient()
+
   return useMutation({
     mutationFn: async (patch: Partial<Profile>) => {
-      const { error } = await supabase.from('profiles').update(patch).eq('id', uid)
+      if (isGuest) {
+        requireAuth()
+        throw new Error('AUTH_REQUIRED')
+      }
+
+      if (!uid) {
+        throw new Error('No authenticated user')
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(patch)
+        .eq('id', uid)
+
       if (error) throw error
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['profile'] })
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] })
+    }
   })
 }
 
 export function useSaveSplit() {
-  const uid = useUid()
+  const { session, isGuest, requireAuth } = useAuth()
+  const uid = session?.user.id
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async (input: { id?: string; description: string; total_amount: number; date: string; shares: { person: string; amount: number; settled?: boolean }[] }) => {
+      if (isGuest) {
+        requireAuth()
+        throw new Error('AUTH_REQUIRED')
+      }
+
+      if (!uid) {
+        throw new Error('No authenticated user')
+      }
       let splitId = input.id
       if (splitId) {
         const { error } = await supabase.from('splits').update({ description: input.description, total_amount: input.total_amount, date: input.date }).eq('id', splitId)
@@ -174,9 +291,14 @@ export function useSaveSplit() {
 export const useDeleteSplit = () => useRemove('splits', ['splits'])
 
 export function useToggleShareSettled() {
+  const { isGuest, requireAuth } = useAuth()
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, settled }: { id: string; settled: boolean }) => {
+      if (isGuest) {
+        requireAuth()
+        throw new Error('AUTH_REQUIRED')
+      }
       const { error } = await supabase.from('split_shares').update({ settled }).eq('id', id)
       if (error) throw error
     },

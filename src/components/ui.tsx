@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useMoneyFmt } from '../api'
 import { useUI } from '../store'
@@ -38,8 +38,56 @@ export function Field({ label, children, hint }: { label: string; children: Reac
   )
 }
 
-export function Card({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cls('rounded-2xl border border-line bg-surface p-5 elev-1 lift', className)}>{children}</div>
+// export function Card({ className, children }: { className?: string; children: React.ReactNode }) {
+//   return <div className={cls('rounded-2xl border border-line bg-surface p-5 elev-1 lift', className)}>{children}</div>
+// }
+export function Card({
+  className,
+  children
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const element = ref.current
+    if (!element) return
+
+    const rect = element.getBoundingClientRect()
+    const x = (event.clientX - rect.left) / rect.width
+    const y = (event.clientY - rect.top) / rect.height
+
+    const rotateY = (x - 0.5) * 5
+    const rotateX = (0.5 - y) * 5
+
+    element.style.setProperty('--card-rx', `${rotateX}deg`)
+    element.style.setProperty('--card-ry', `${rotateY}deg`)
+    element.style.setProperty('--card-lift', '-3px')
+  }
+
+  function handlePointerLeave() {
+    const element = ref.current
+    if (!element) return
+
+    element.style.setProperty('--card-rx', '0deg')
+    element.style.setProperty('--card-ry', '0deg')
+    element.style.setProperty('--card-lift', '0px')
+  }
+
+  return (
+    <div
+      ref={ref}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      className={cls(
+        'depth-card rounded-2xl border border-line bg-surface p-5',
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
 }
 
 export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; wide?: boolean }) {

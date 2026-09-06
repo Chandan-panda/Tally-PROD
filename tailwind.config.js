@@ -18,9 +18,13 @@ export default {
         neg: 'var(--negative)',
         warn: 'var(--warn)'
       },
+      // fontFamily: {
+      //   display: ['Fraunces', 'Georgia', 'serif'],
+      //   sans: ['Inter', 'system-ui', 'sans-serif']
+      // }
       fontFamily: {
-        display: ['Fraunces', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        display: ['DM Serif Display', 'Georgia', 'serif'],
+        sans: ['Manrope', 'system-ui', 'sans-serif']
       }
     }
   },

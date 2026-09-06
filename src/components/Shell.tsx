@@ -7,6 +7,8 @@ import { useUI } from '../store'
 import Logo from './Logo'
 import TransactionForm from './TransactionForm'
 import { Toaster, cls } from './ui'
+import AuthModal from './AuthModal'
+import { useAuth } from '../auth'
 
 const MAIN_NAV = [
   { to: '/', label: 'Home', icon: '\u2302' },
@@ -44,12 +46,13 @@ function ThemeSync() {
 
 function RecurringEngine() {
   const uid = useUid()
+  const { isGuest } = useAuth()
   const { data: rules } = useRecurringRules()
   const qc = useQueryClient()
   const toast = useUI(s => s.toast)
   const ran = useRef(false)
   useEffect(() => {
-    if (!rules || ran.current) return
+    if (isGuest || !uid || !rules || ran.current) return
     ran.current = true
     materializeDueRules(uid, rules).then(posted => {
       if (posted > 0) {
@@ -58,12 +61,21 @@ function RecurringEngine() {
         toast(`Posted ${posted} scheduled transaction${posted === 1 ? '' : 's'}`, 'pos')
       }
     })
-  }, [rules])
+  }, [rules, isGuest, uid])
   return null
 }
 
 export default function Shell() {
   const { txFormOpen, setTxFormOpen } = useUI()
+  const { isGuest, requireAuth, leaveGuest } = useAuth()
+  const openTransactionForm = () => {
+    if (isGuest) {
+      requireAuth()
+      return
+    }
+
+    setTxFormOpen(true)
+  }
   return (
     <div className="ambient-bg flex h-full">
       <ThemeSync />
@@ -74,9 +86,14 @@ export default function Shell() {
         <div className="mb-8 flex items-center gap-2.5 px-2">
           <Logo className="h-9 w-9" />
          <span className="font-display text-xl font-semibold tracking-tight">Tally</span>
+         {isGuest && (
+            <span className="rounded-full border border-accent/20 bg-accentsoft px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-accent">
+              Demo
+            </span>
+          )}
         </div>
         <button
-          onClick={() => setTxFormOpen(true)}
+          onClick={openTransactionForm}
           className="elev-2 lift mb-6 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-accentink transition-all hover:opacity-90 active:scale-[0.98]"
         >
           <span className="text-base leading-none">+</span> New transaction
@@ -113,6 +130,31 @@ export default function Shell() {
 
       {/* Main */}
       <main className="relative z-10 flex-1 overflow-y-auto scroll-thin">
+        {isGuest && (
+          <div className="relative z-20 border-b border-accent/20 bg-accentsoft/70 px-4 py-2 text-sm text-accent">
+            <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
+              <span>
+                Demo mode: sample data only. Your changes will not be saved.
+              </span>
+
+              <div className="flex shrink-0 items-center gap-3">
+                <button
+                  onClick={requireAuth}
+                  className="font-semibold underline underline-offset-4"
+                >
+                  Create account
+                </button>
+
+                <button
+                  onClick={leaveGuest}
+                  className="text-soft hover:text-ink"
+                >
+                  Exit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 md:pb-10 md:pt-8">
           <Outlet />
         </div>
@@ -123,7 +165,7 @@ export default function Shell() {
         <div className="relative mx-auto flex max-w-md items-center justify-between px-6 py-2">
           {MOBILE_NAV.slice(0, 2).map(n => <MobileLink key={n.to} {...n} />)}
           <button
-            onClick={() => setTxFormOpen(true)}
+            onClick={openTransactionForm}
             aria-label="New transaction"
             className="elev-3 lift -mt-6 grid h-14 w-14 place-items-center rounded-full bg-accent text-2xl text-accentink transition-transform active:scale-95"
           >
@@ -134,6 +176,7 @@ export default function Shell() {
       </nav>
 
       <TransactionForm open={txFormOpen} onClose={() => setTxFormOpen(false)} />
+        <AuthModal />
       <Toaster />
     </div>
   )

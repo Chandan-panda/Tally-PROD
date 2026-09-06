@@ -7,8 +7,10 @@ import { Button, EmptyState, Input, Select, Skeleton } from '../components/ui'
 import { friendlyDay } from '../lib/format'
 import { useUI } from '../store'
 import type { Transaction } from '../types'
+import { useAuth } from '../auth'
 
 export default function Transactions() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: txs = [], isLoading } = useTransactions()
   const { data: accounts = [] } = useAccounts()
   const { data: categories = [] } = useCategories()
@@ -72,7 +74,14 @@ export default function Transactions() {
           <h1 className="font-display text-2xl font-semibold">Activity</h1>
           <p className="text-sm text-soft">{filtered.length} transaction{filtered.length === 1 ? '' : 's'} · +{fmt(totals.income)} / −{fmt(totals.expense)}</p>
         </div>
-        <Button className="hidden sm:inline-flex" onClick={() => setTxFormOpen(true)}>+ New</Button>
+        <Button className="hidden sm:inline-flex" onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  setTxFormOpen(true)
+}}>+ New</Button>
       </header>
 
       {/* Filters */}
@@ -110,7 +119,14 @@ export default function Transactions() {
       ) : groups.length === 0 ? (
         hasFilters
           ? <EmptyState icon="🔍" title="Nothing matches" body="Try loosening your filters or searching for something else." />
-          : <EmptyState icon="✍️" title="No transactions yet" body="Everything you log will appear here, grouped by day." action={<Button onClick={() => setTxFormOpen(true)}>Add your first</Button>} />
+          : <EmptyState icon="✍️" title="No transactions yet" body="Everything you log will appear here, grouped by day." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  setTxFormOpen(true)
+}}>Add your first</Button>} />
       ) : (
         <div className="space-y-5">
           {groups.map(([date, list]) => {

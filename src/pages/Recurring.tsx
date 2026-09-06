@@ -5,6 +5,7 @@ import { shortDate, todayISO } from '../lib/format'
 import { upcomingOccurrences } from '../lib/recurring'
 import { useUI } from '../store'
 import type { Frequency, RecurringRule, TxType } from '../types'
+import { useAuth } from '../auth'
 
 function freqLabel(rule: RecurringRule): string {
   const unit = { daily: 'day', weekly: 'week', monthly: 'month', yearly: 'year' }[rule.frequency]
@@ -14,6 +15,7 @@ function freqLabel(rule: RecurringRule): string {
 }
 
 export default function Recurring() {
+  const { isGuest, requireAuth } = useAuth()
   const { data: rules = [] } = useRecurringRules()
   const { data: accounts = [] } = useAccounts()
   const { data: categories = [] } = useCategories()
@@ -83,11 +85,25 @@ export default function Recurring() {
           <h1 className="font-display text-2xl font-semibold">Recurring</h1>
           <p className="text-sm text-soft">Salary, rent, subscriptions — set them once, never forget them.</p>
         </div>
-        <Button onClick={() => openForm()}>+ Rule</Button>
+        <Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>+ Rule</Button>
       </header>
 
       {rules.length === 0 ? (
-        <EmptyState icon="🔁" title="No recurring rules" body="Automate transactions that repeat. Tally posts them on schedule, even while you sleep." action={<Button onClick={() => openForm()}>Create a rule</Button>} />
+        <EmptyState icon="🔁" title="No recurring rules" body="Automate transactions that repeat. Tally posts them on schedule, even while you sleep." action={<Button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm()
+}}>Create a rule</Button>} />
       ) : (
         <div className="space-y-3">
           {rules.map(r => {
@@ -109,7 +125,14 @@ export default function Recurring() {
                     {r.type === 'income' ? '+' : r.type === 'expense' ? '−' : ''}{fmt(Number(r.amount))}
                   </p>
                   <div className="mt-0.5 flex justify-end gap-2 text-xs">
-                    <button onClick={() => openForm(r)} className="text-soft hover:text-ink">Edit</button>
+                    <button onClick={() => {
+  if (isGuest) {
+    requireAuth()
+    return
+  }
+
+  openForm(r)
+}} className="text-soft hover:text-ink">Edit</button>
                     <button onClick={async () => { await save.mutateAsync({ id: r.id, active: !r.active }); toast(r.active ? 'Rule paused' : 'Rule resumed', 'neutral') }} className="text-soft hover:text-ink">{r.active ? 'Pause' : 'Resume'}</button>
                   </div>
                 </div>

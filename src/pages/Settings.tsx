@@ -5,9 +5,15 @@ import { Button, Card, Field, Input, Modal, Segmented, Select, cls } from '../co
 import { downloadFile, importTransactionsCSV, transactionsToCSV } from '../lib/csv'
 import { supabase } from '../lib/supabase'
 import { useUI } from '../store'
+import { useAuth } from '../auth'
 import { CURRENCIES, PALETTE, type Category, type CategoryKind } from '../types'
 
 export default function Settings() {
+  const {
+    isGuest,
+    requireAuth,
+    leaveGuest
+  } = useAuth()
   const uid = useUid()
   const qc = useQueryClient()
   const { data: profile } = useProfile()
@@ -64,6 +70,7 @@ export default function Settings() {
   async function onImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!uid) return
     setImporting(true)
     try {
       const text = await file.text()
@@ -157,6 +164,10 @@ export default function Settings() {
         </div>
         <div className="mt-4">
           <Button disabled={pwBusy} onClick={async () => {
+            if (isGuest) {
+              requireAuth()
+              return
+            }
             if (pw1.length < 8) return toast('Password must be at least 8 characters', 'neg')
             if (pw1 !== pw2) return toast('Passwords do not match', 'neg')
             setPwBusy(true)
@@ -207,7 +218,16 @@ export default function Settings() {
       {/* Account */}
       <Card>
         <h2 className="mb-3 font-display text-lg font-semibold">Account</h2>
-        <Button variant="danger" onClick={() => supabase.auth.signOut()}>Sign out</Button>
+        <Button variant="danger" onClick={async () => {
+          if (isGuest) {
+            leaveGuest()
+            return
+          }
+
+          await supabase.auth.signOut({
+            scope: 'local'
+          })
+        }}>Sign out</Button>
       </Card>
 
       {/* Category modal */}
