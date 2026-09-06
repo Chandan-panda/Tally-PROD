@@ -249,7 +249,7 @@ export default function AuthPage({ embedded = false }: { embedded?: boolean }) {
                 className="w-full rounded-full py-3"
                 onClick={enterGuest}
               >
-                Explore with sample data
+                Login as Guest
               </Button>
             </div>
           )}
