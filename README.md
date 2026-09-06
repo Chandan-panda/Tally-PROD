@@ -1,88 +1,175 @@
-# Tally — Personal Finance, Done Right
+<div align="center">
 
-Keep count of what counts. A complete, beautifully designed personal expense tracker.. Built with React + TypeScript + Vite on the frontend and Supabase (PostgreSQL + Auth + Row Level Security) as the backend, so your data persists reliably and syncs across devices. Installable as a PWA on any device.
+# Tally
 
-## What's built (current state)
+### Personal finance, without the spreadsheet headache.
 
-**Core money tracking**
-- Income, expense, and transfer logging with categories, tags, and notes
-- Fast-entry transaction form optimized for mobile (big amount input, category chips)
-- Multiple accounts: bank, credit card, UPI/wallet, cash, investment, loan — each with opening balance, emoji icon, and color
-- Account archiving, asset vs liability grouping, per-account running balances
-- Transfers between accounts that keep both balances correct
+A modern personal finance app for tracking money, planning spending, and understanding where it goes.
 
-**Planning**
-- Monthly budgets per expense category with progress bars and over-budget warnings, browsable month by month
-- Savings goals with targets, deadlines, contribution logging, and progress rings
-- Recurring rules (daily/weekly/monthly/yearly with custom intervals) — an engine materializes due transactions automatically on app load; rules can be paused or set to reminder-only; 30-day upcoming preview
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-chandanpanda.in-176F68?style=for-the-badge)](https://www.chandanpanda.in/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
+[![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 
-**Insight**
-- Analytics across week / month / quarter / year / all-time ranges
-- Income vs spending trend chart, category donut breakdown, period-over-period comparison, net worth over time
-- Computed insight cards from your own data: savings rate, spending change vs last period, biggest category movement, top category share, largest single expense, statistical anomaly days (mean + 2σ), no-spend days
-- Calendar view with daily spend heatmap and tap-to-inspect day details
-- Net worth tracking across all accounts (assets minus liabilities)
+<p>
+  <a href="https://www.chandanpanda.in/">Live App</a> •
+  <a href="https://github.com/Chandan-panda/Tally-PROD">Source Code</a>
+</p>
 
-**Sharing & data**
-- Split expenses: record who owes what, settle per person, see outstanding balances
-- Global search and filtering: text, type, category, account, date range, amount range
-- CSV and JSON export; CSV import that auto-creates missing accounts/categories
-- Full category customization (create, edit, archive) for income and expense, with icons and colors
-- Currency preference (formatted via Intl), display name, light/dark/system theme
+</div>
 
-**Foundation**
-- Supabase schema with Row Level Security — every user only ever sees their own rows (`supabase/migrations/0001_init.sql`)
-- New users are auto-seeded with a profile, default categories, and a cash account
-- TanStack Query for server state, Zustand for UI state, React Router for navigation
-- Design system: editorial aesthetic with Fraunces + Inter, warm paper palette, dark mode, designed empty states, skeletons, toasts
-- Fully responsive: sidebar on desktop, bottom tab bar + floating add button on mobile
-- PWA-ready via vite-plugin-pwa (installable, auto-updating service worker)
+---
 
-## Getting started
+## ✨ The idea
 
-1. **Create a Supabase project** at [supabase.com](https://supabase.com) (free tier works).
-2. **Run the migration**: open the SQL editor in your Supabase dashboard and run the contents of `supabase/migrations/0001_init.sql` (or use `supabase db push` with the CLI).
-3. **Configure env locally**: copy `.env.example` to `.env` and fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from Project Settings > API. Keep `.env` out of GitHub.
-4. **Install and run**:
-   ```sh
-   npm install
-   npm run dev
-   ```
-5. Sign up in the app — default categories and a cash account are created automatically.
+Most personal finance apps either feel too basic or too much like accounting software. **Tally sits in the middle**: a calm, visual workspace that helps you capture everyday money activity and turn it into useful financial context.
 
-For production: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as environment variables in your host/deployment settings, then `npm run build` and deploy `dist/` to any static host (Netlify, Vercel, Cloudflare Pages). Enable email confirmation settings in Supabase Auth as desired.
+You can track income and expenses, manage multiple accounts, set budgets and savings goals, monitor recurring money, split expenses, and explore analytics — all in one place.
 
-## Architecture
+### Try it without signing up
 
+Open the app and choose **Explore with sample data**. The demo is client-side and read-only, so you can explore the product without creating an account or touching production financial data.
+
+<div align="center">
+
+[**→ Open Tally**](https://www.chandanpanda.in/)
+
+</div>
+
+---
+
+## 📸 Product preview
+
+<div align="center">
+
+<img src="./tally_readme_assets/tally-preview.svg" alt="Tally personal finance dashboard preview" width="1100" />
+
+</div>
+
+> **Note:** The image above is an illustrative product preview. The live application at [chandanpanda.in](https://www.chandanpanda.in/) is the source of truth for the current UI.
+
+---
+
+## 🚀 What you can do with Tally
+
+| | Feature | What it gives you |
+|---|---|---|
+| 💸 | **Money tracking** | Income, expenses, transfers, categories, tags and notes |
+| 🏦 | **Accounts** | Bank, credit card, UPI/wallet, cash, investments and loans |
+| 🎯 | **Budgets & goals** | Monthly budgets, savings targets, deadlines and progress |
+| 🔁 | **Recurring money** | Scheduled income/expenses with automatic or reminder-only rules |
+| 📊 | **Analytics** | Trends, category breakdowns, comparisons, savings rate and net worth |
+| 🗓️ | **Calendar** | Daily spending activity and transaction drill-down |
+| 🤝 | **Splits** | Track shared expenses and settlement status |
+| 🔎 | **Search & filters** | Find transactions by text, type, category, account, date or amount |
+| 📦 | **Import / export** | CSV + JSON export and CSV import with automatic missing-category/account creation |
+| 🎨 | **Customization** | Categories, colors, currency, profile settings and light/dark/system themes |
+| 📱 | **PWA** | Installable app experience across supported devices |
+
+---
+
+## 🔐 Built with privacy in mind
+
+Authenticated data is stored in Supabase/PostgreSQL and protected with **Row Level Security**, keeping each user's records isolated.
+
+The guest experience follows a separate local-data path: demo records stay in the browser and are never inserted into Supabase. Mutation actions are gated behind authentication. This keeps the demo useful without mixing sample data with real user data.
+
+---
+
+## 🧠 A few things happening under the hood
+
+```text
+React + TypeScript
+        │
+        ├── React Router ─────── Application routes
+        ├── TanStack Query ───── Server state & caching
+        ├── Zustand ──────────── UI state
+        └── Tailwind CSS ─────── Design system
+                 │
+                 ▼
+             Supabase
+        ┌────────┴────────┐
+        │                 │
+      Auth             PostgreSQL
+        │                 │
+        └────── RLS ──────┘
+
+Guest Mode ──► Local demo dataset ──► No Supabase writes
 ```
-src/
-  api.ts              # All Supabase queries/mutations as typed React Query hooks
-  auth.tsx            # Session provider + first-login seeding
-  store.ts            # UI state (toasts, quick-add modal)
-  types.ts            # Domain types mirroring the DB schema
-  lib/                # Pure domain logic: balances, insights, recurring engine, CSV, formatting
-  components/         # Design-system primitives (ui.tsx), shell, shared forms
-  pages/              # One file per route
-supabase/migrations/  # SQL schema with RLS policies
+
+The codebase keeps data access concentrated in the API layer, domain utilities under `src/lib`, reusable UI in `src/components`, and route-level experiences in `src/pages`.
+
+---
+
+## 🛠️ Tech stack
+
+**Frontend:** React 18 · TypeScript · Vite · Tailwind CSS · React Router · Recharts  
+**State:** TanStack Query · Zustand  
+**Backend:** Supabase · PostgreSQL · Auth · Row Level Security  
+**Utilities:** date-fns · PWA via `vite-plugin-pwa`
+
+---
+
+## ⚡ Run locally
+
+### 1. Clone
+
+```bash
+git clone https://github.com/Chandan-panda/Tally-PROD.git
+cd Tally-PROD
 ```
 
-## Next steps (roadmap)
+### 2. Install
 
-- **Verify end-to-end against a live Supabase project** — run the migration, exercise every flow (signup seeding, recurring posting, import/export), and fix anything the first real session surfaces
-- **PWA icons**: replace the SVG-only icon with proper 192/512 maskable PNGs for best install experience on Android/iOS
-- **Budget rollover**: the `rollover` flag exists in the schema; carry unused budget into the next month in the UI
-- **Goal funding from accounts**: optionally link goal contributions to a real transfer transaction
-- **Attachments**: receipt photos on transactions via Supabase Storage
-- **Offline writes**: queue mutations while offline and sync on reconnect (currently only the app shell is offline-capable)
-- **Multi-currency accounts**: per-account currency with conversion for net worth
-- **Notifications**: reminders for upcoming non-auto-post recurring rules
-- **Type generation**: generate Supabase types from the schema and a CI job for `npm run typecheck` + lint
-- **Tests**: unit tests for `lib/` (insights, recurring, CSV) and a smoke E2E
+```bash
+npm install
+```
 
-## Tech stack
+### 3. Configure Supabase
 
-React 18 · TypeScript · Vite · Tailwind CSS · Supabase (Postgres, Auth, RLS) · TanStack Query · Zustand · React Router · Recharts · date-fns · vite-plugin-pwa
+Create a Supabase project and add a `.env` file:
 
-## Changelog
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-- Fixed duplicated default categories/accounts and the "categories appear only after adding one" bug: first-login seeding is now idempotent and StrictMode-safe, caches refresh after seeding, and `supabase/migrations/0002_dedupe_seed_data.sql` cleans up existing duplicates.
+Run the database migration from:
+
+```text
+supabase/migrations/0001_init.sql
+```
+
+### 4. Start
+
+```bash
+npm run dev
+```
+
+For a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## 🗺️ Roadmap
+
+Tally is still evolving. Planned improvements include better PWA icons, budget rollover, receipt attachments, offline writes, multi-currency accounts, recurring reminders, generated Supabase types, and automated tests.
+
+---
+
+## 👋 About
+
+Tally is a personal project built by **Chandan Panda** to make personal finance management simpler, clearer, and more enjoyable to use.
+
+<div align="center">
+
+### Keep count of what counts.
+
+[**Try Tally →**](https://www.chandanpanda.in/)
+
+</div>
