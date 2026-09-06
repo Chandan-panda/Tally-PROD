@@ -43,7 +43,7 @@ Open the app and choose **Explore with sample data**. The demo is client-side an
 
 <div align="center">
 
-<img src="./tally_readme_assets/tally-preview.svg" alt="Tally personal finance dashboard preview" width="1100" />
+<img src="tally-preview.svg" alt="Tally personal finance dashboard preview" width="1100" />
 
 </div>
 
